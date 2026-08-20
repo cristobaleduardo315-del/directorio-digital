@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Directorio Digital</title>
+  <meta name="description" content="Directorio Digital — encuentra negocios y servicios cerca de ti.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="logo">Directorio<span>Digital</span></a>
+      <nav class="nav">
+        <a href="#categorias">Categorías</a>
+        <a href="#directorio">Directorio</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Encuentra lo que necesitas, cerca de ti</h1>
+        <p>El directorio digital que conecta personas con negocios y servicios de confianza.</p>
+        <form class="search-form" role="search" onsubmit="return false;">
+          <input type="search" id="search-input" placeholder="Buscar negocio, servicio o categoría...">
+          <button type="submit">Buscar</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="categorias" class="categories">
+      <div class="container">
+        <h2>Categorías</h2>
+        <div class="category-grid" id="category-grid"></div>
+      </div>
+    </section>
+
+    <section id="directorio" class="listings">
+      <div class="container">
+        <h2>Listados destacados</h2>
+        <div class="listing-grid" id="listing-grid"></div>
+      </div>
+    </section>
+
+    <section id="contacto" class="cta">
+      <div class="container">
+        <h2>¿Tienes un negocio?</h2>
+        <p>Regístralo en Directorio Digital y llega a más clientes.</p>
+        <a href="mailto:contacto@directoriodigital.com" class="button">Contáctanos</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span id="year"></span> Directorio Digital. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
