@@ -3,56 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Directorio Digital</title>
-  <meta name="description" content="Directorio Digital — encuentra negocios y servicios cerca de ti.">
+  <title>Directorio Digital — ¿Hoy qué quieres hacer?</title>
+  <meta name="description" content="Directorio Digital — encuentra los mejores restaurantes, cafeterías, bares y experiencias cerca de ti.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a href="/" class="logo">Directorio<span>Digital</span></a>
-      <nav class="nav">
-        <a href="#categorias">Categorías</a>
-        <a href="#directorio">Directorio</a>
-        <a href="#contacto">Contacto</a>
-      </nav>
-    </div>
-  </header>
+  <div class="hero-wrap">
+    <div class="stars" aria-hidden="true"></div>
 
-  <main>
-    <section class="hero">
-      <div class="container">
-        <h1>Encuentra lo que necesitas, cerca de ti</h1>
-        <p>El directorio digital que conecta personas con negocios y servicios de confianza.</p>
-        <form class="search-form" role="search" onsubmit="return false;">
-          <input type="search" id="search-input" placeholder="Buscar negocio, servicio o categoría...">
-          <button type="submit">Buscar</button>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="/" class="logo">directorio<br><span>digital</span></a>
+        <nav class="nav">
+          <a href="#restaurantes">Restaurantes</a>
+          <a href="#cafes">Cafés &amp; Bares</a>
+          <a href="#hoteles">Hoteles</a>
+          <a href="#recreacion">Recreación</a>
+        </nav>
+        <a href="#registrar" class="btn btn-white">Registrar Comercio</a>
+      </div>
+    </header>
+
+    <main class="hero">
+      <div class="container hero-inner">
+        <span class="badge">Guía local de comercios</span>
+        <h1>¿Hoy qué quieres hacer?</h1>
+        <p class="hero-subtitle">Encuentra los mejores restaurantes, cafeterías, bares y experiencias cerca de ti.</p>
+
+        <form class="search-bar" role="search" onsubmit="return false;">
+          <div class="search-field">
+            <label for="categoria">Categoría</label>
+            <select id="categoria">
+              <option>Todos los planes</option>
+              <option>Restaurantes</option>
+              <option>Cafés</option>
+              <option>Bares &amp; Vida Nocturna</option>
+              <option>Hoteles &amp; Hospedaje</option>
+              <option>Centros Recreativos</option>
+            </select>
+          </div>
+          <div class="search-field">
+            <label for="ubicacion">Ubicación</label>
+            <input id="ubicacion" type="text" placeholder="Zona, barrio o sector">
+          </div>
+          <div class="search-field">
+            <label for="fecha">Fecha</label>
+            <input id="fecha" type="text" placeholder="Hoy, fin de semana">
+          </div>
+          <button type="submit" class="btn btn-accent">
+            Explorar
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
         </form>
       </div>
-    </section>
 
-    <section id="categorias" class="categories">
-      <div class="container">
-        <h2>Categorías</h2>
-        <div class="category-grid" id="category-grid"></div>
-      </div>
-    </section>
+      <div class="carousel" id="carousel"></div>
+    </main>
+  </div>
 
-    <section id="directorio" class="listings">
-      <div class="container">
-        <h2>Listados destacados</h2>
-        <div class="listing-grid" id="listing-grid"></div>
-      </div>
-    </section>
-
-    <section id="contacto" class="cta">
-      <div class="container">
-        <h2>¿Tienes un negocio?</h2>
-        <p>Regístralo en Directorio Digital y llega a más clientes.</p>
-        <a href="mailto:contacto@directoriodigital.com" class="button">Contáctanos</a>
-      </div>
-    </section>
-  </main>
+  <section id="registrar" class="cta">
+    <div class="container">
+      <h2>¿Tienes un negocio?</h2>
+      <p>Regístralo en Directorio Digital y llega a más clientes.</p>
+      <a href="mailto:contacto@directoriodigital.com" class="btn btn-dark">Contáctanos</a>
+    </div>
+  </section>
 
   <footer class="site-footer">
     <div class="container">
