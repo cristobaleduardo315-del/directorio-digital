@@ -908,8 +908,11 @@
 
     // Overlay HTML posicionado sobre el mapa clásico (raster) usando
     // OverlayView — no requiere Map ID ni Marcadores Avanzados de Google.
-    // (Usa function + prototype en vez de "class" a propósito: es el patrón
-    // más compatible para extender OverlayView desde un callback externo.)
+    // (Usa function + prototype en vez de "class" a propósito.) IMPORTANTE:
+    // el objeto google.maps.OverlayView que existe apenas se carga el script
+    // de Maps es solo un "adelanto" — sus métodos reales (setMap, getPanes,
+    // etc.) se completan un poco después. Por eso el enlace con su prototype
+    // (setupHtmlPin) se hace DENTRO de initGoogleMap, no aquí arriba.
     function HtmlPin(gmap, position, html, onClick) {
       google.maps.OverlayView.call(this);
       this.position = position;
@@ -918,46 +921,49 @@
       this.div = null;
       this.setMap(gmap);
     }
-    HtmlPin.prototype = Object.create(google.maps.OverlayView.prototype);
-    HtmlPin.prototype.constructor = HtmlPin;
-    HtmlPin.prototype.onAdd = function () {
-      const div = document.createElement('div');
-      div.className = 'map-pin';
-      div.innerHTML = this.html;
-      const self = this;
-      div.addEventListener('click', function (e) {
-        e.stopPropagation();
-        if (self.onClick) self.onClick();
-      });
-      this.div = div;
-      this.getPanes().overlayMouseTarget.appendChild(div);
-    };
-    HtmlPin.prototype.draw = function () {
-      if (!this.div) return;
-      const proj = this.getProjection();
-      if (!proj) return;
-      const pos = proj.fromLatLngToDivPixel(new google.maps.LatLng(this.position.lat, this.position.lng));
-      this.div.style.left = pos.x + 'px';
-      this.div.style.top = pos.y + 'px';
-    };
-    HtmlPin.prototype.onRemove = function () {
-      if (this.div && this.div.parentNode) this.div.parentNode.removeChild(this.div);
-      this.div = null;
-    };
-    HtmlPin.prototype.updateContent = function (html) {
-      this.html = html;
-      if (this.div) this.div.innerHTML = html;
-    };
-    HtmlPin.prototype.updatePosition = function (position) {
-      this.position = position;
-      this.draw();
-    };
-    HtmlPin.prototype.setActive = function (active) {
-      if (this.div) this.div.classList.toggle('is-active', active);
-    };
-    HtmlPin.prototype.remove = function () {
-      this.setMap(null);
-    };
+
+    function setupHtmlPin() {
+      HtmlPin.prototype = Object.create(google.maps.OverlayView.prototype);
+      HtmlPin.prototype.constructor = HtmlPin;
+      HtmlPin.prototype.onAdd = function () {
+        const div = document.createElement('div');
+        div.className = 'map-pin';
+        div.innerHTML = this.html;
+        const self = this;
+        div.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (self.onClick) self.onClick();
+        });
+        this.div = div;
+        this.getPanes().overlayMouseTarget.appendChild(div);
+      };
+      HtmlPin.prototype.draw = function () {
+        if (!this.div) return;
+        const proj = this.getProjection();
+        if (!proj) return;
+        const pos = proj.fromLatLngToDivPixel(new google.maps.LatLng(this.position.lat, this.position.lng));
+        this.div.style.left = pos.x + 'px';
+        this.div.style.top = pos.y + 'px';
+      };
+      HtmlPin.prototype.onRemove = function () {
+        if (this.div && this.div.parentNode) this.div.parentNode.removeChild(this.div);
+        this.div = null;
+      };
+      HtmlPin.prototype.updateContent = function (html) {
+        this.html = html;
+        if (this.div) this.div.innerHTML = html;
+      };
+      HtmlPin.prototype.updatePosition = function (position) {
+        this.position = position;
+        this.draw();
+      };
+      HtmlPin.prototype.setActive = function (active) {
+        if (this.div) this.div.classList.toggle('is-active', active);
+      };
+      HtmlPin.prototype.remove = function () {
+        this.setMap(null);
+      };
+    }
 
     function whatsappUrl(contacto) {
       const digits = (contacto || '').replace(/\D/g, '');
@@ -1153,6 +1159,7 @@
 
     // Llamada automáticamente por el script de Google Maps de abajo (parámetro callback)
     function initGoogleMap() {
+      setupHtmlPin();
       map = new google.maps.Map(document.getElementById('map'), {
         center: PEREIRA_CENTER,
         zoom: 13,
