@@ -342,21 +342,113 @@
       }
     }
 
+    /* --- Menú móvil (hamburguesa) --- */
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: #ffffff;
+      border-radius: 2px;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    body.menu-open .menu-toggle span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    body.menu-open .menu-toggle span:nth-child(2) {
+      opacity: 0;
+    }
+    body.menu-open .menu-toggle span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .mobile-nav {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 20px;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.3s ease;
+    }
+
+    .mobile-nav a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 12px 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .mobile-nav .btn-cta-nav {
+      margin-top: 12px;
+      text-align: center;
+      border-bottom: none;
+      color: var(--dark-text);
+    }
+
+    body.menu-open .mobile-nav {
+      max-height: 400px;
+      opacity: 1;
+      padding: 10px 20px 20px;
+    }
+
     /* --- Responsive --- */
     @media (max-width: 768px) {
       header {
-        padding: 18px 20px;
+        padding: 16px 20px;
       }
       .brand-logo {
-        height: 60px; /* Tamaño adaptado para móviles */
+        height: 48px; /* Tamaño adaptado para móviles */
       }
       nav {
         display: none;
+      }
+      .menu-toggle {
+        display: flex;
+      }
+      header .btn-cta-nav {
+        display: none;
+      }
+      .mobile-nav {
+        display: flex;
+      }
+      .hero {
+        margin-top: 8px;
+        padding: 0 16px;
+      }
+      .hero-tag {
+        font-size: 0.75rem;
+        padding: 5px 14px;
+      }
+      .hero p {
+        font-size: 1rem;
+        margin-bottom: 28px;
       }
       .search-container {
         flex-direction: column;
         border-radius: 20px;
         padding: 16px;
+        margin-bottom: 28px;
       }
       .search-field {
         width: 100%;
@@ -369,8 +461,46 @@
         justify-content: center;
         margin-top: 10px;
       }
+      .showcase-wrapper {
+        padding: 8px 0 40px;
+        perspective: none;
+      }
+      .carousel-track {
+        gap: 16px;
+        animation-duration: 28s;
+      }
+      .biz-card {
+        width: 190px;
+        transform: none;
+      }
+      .biz-card:hover {
+        transform: translateY(-4px);
+      }
+      .biz-image {
+        height: 110px;
+      }
     }
-  </style>
+
+    @media (max-width: 420px) {
+      header {
+        padding: 14px 16px;
+      }
+      .brand-logo {
+        height: 40px;
+      }
+      .hero h1 {
+        letter-spacing: -0.5px;
+      }
+      .search-container {
+        padding: 12px;
+      }
+      .biz-card {
+        width: 168px;
+      }
+      .biz-image {
+        height: 96px;
+      }
+    }
 </head>
 <body>
 
@@ -390,7 +520,18 @@
       <a href="#">Recreación</a>
     </nav>
     <a href="#" class="btn-cta-nav">Registrar Comercio</a>
+    <button class="menu-toggle" type="button" aria-label="Abrir menú" onclick="document.body.classList.toggle('menu-open')">
+      <span></span><span></span><span></span>
+    </button>
   </header>
+
+  <nav class="mobile-nav">
+    <a href="#">Restaurantes</a>
+    <a href="#">Cafés &amp; Bares</a>
+    <a href="#">Hoteles</a>
+    <a href="#">Recreación</a>
+    <a href="#" class="btn-cta-nav">Registrar Comercio</a>
+  </nav>
 
   <!-- Sección Principal -->
   <main class="hero">
