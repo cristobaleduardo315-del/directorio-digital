@@ -727,7 +727,7 @@
          imagen: "https://images.unsplash.com/..."
        }
        ========================================================================= */
-    const firebaseConfig = {
+    var firebaseConfig = {
       apiKey: "AIzaSyACQy3_crmbhwAhDhz1Pzna867rIgVKkys",
       authDomain: "pereira-ayuda.firebaseapp.com",
       projectId: "pereira-ayuda",
@@ -737,13 +737,13 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+    var db = firebase.firestore();
+    var auth = firebase.auth();
 
     // Categorías reales del directorio (mismas que soygogo.com/pereira-ayuda).
     // Cada una define: etiqueta visible, color de acento e ícono (SVG con
     // formas simples: circle/line/rect/polyline, para que nunca se rompa).
-    const CATEGORY_META = {
+    var CATEGORY_META = {
       restaurante:  { label: 'Restaurantes',        color: '#ea580c', emoji: '🍽️', icon: '<line x1="6" y1="3" x2="6" y2="21"/><line x1="3" y1="3" x2="3" y2="9"/><line x1="9" y1="3" x2="9" y2="9"/><line x1="18" y1="3" x2="18" y2="21"/><circle cx="18" cy="8" r="3"/>' },
       cafe:         { label: 'Cafés',                color: '#92400e', emoji: '☕', icon: '<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>' },
       panaderia:    { label: 'Panaderías',           color: '#b45309', emoji: '🥖', icon: '<rect x="4" y="10" width="16" height="8" rx="4"/><line x1="8" y1="10" x2="8" y2="6"/><line x1="16" y1="10" x2="16" y2="6"/>' },
@@ -757,16 +757,16 @@
       psicologia:   { label: 'Servicio psicológico', color: '#0891b2', emoji: '🧠', icon: '<circle cx="12" cy="11" r="8"/><line x1="9" y1="20" x2="7" y2="23"/>' },
       otro:         { label: 'Otros',                color: '#6b7280', emoji: '📍', icon: '<circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>' }
     };
-    const CATEGORY_ORDER = ['restaurante','cafe','panaderia','tienda','farmacia','ferreteria','taller_autos','mascotas','servicios','ropa','psicologia','otro'];
-    const TODOS_ICON = '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>';
+    var CATEGORY_ORDER = ['restaurante','cafe','panaderia','tienda','farmacia','ferreteria','taller_autos','mascotas','servicios','ropa','psicologia','otro'];
+    var TODOS_ICON = '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>';
 
-    const ESTADO_META = {
+    var ESTADO_META = {
       abierto:  { label: 'Abierto', color: '#16a34a' },
       limitada: { label: 'Capacidad limitada', color: '#ea580c' },
       cerrado:  { label: 'Cerrado', color: '#6b7280' }
     };
 
-    const ENTREGA_META = {
+    var ENTREGA_META = {
       domicilio: 'Con domicilio',
       recogida: 'Solo recogida en sitio',
       ambos: 'Domicilio y recogida'
@@ -774,18 +774,18 @@
 
     // Datos de respaldo: solo se usan mientras la colección de Firestore esté
     // vacía (o si no se puede conectar), para que el mapa nunca se vea vacío.
-    const FALLBACK_PLACES = [
+    var FALLBACK_PLACES = [
       { id: 'demo-1', nombre: "Origen & Grano Café", categoria: "cafe", categoriaLabel: CATEGORY_META.cafe.label, categoriaColor: CATEGORY_META.cafe.color, estado: "abierto", estadoLabel: "Abierto", estadoColor: ESTADO_META.abierto.color, entrega: "ambos", descripcion: "Café Especial · Repostería", direccion: "Cra 13 # 14-22, Centro", contacto: "", lat: 4.8143, lng: -75.6946, imagen: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&auto=format&fit=crop&q=60" },
       { id: 'demo-2', nombre: "La Brasa Bistro", categoria: "restaurante", categoriaLabel: CATEGORY_META.restaurante.label, categoriaColor: CATEGORY_META.restaurante.color, estado: "abierto", estadoLabel: "Abierto", estadoColor: ESTADO_META.abierto.color, entrega: "ambos", descripcion: "Cortes Premium · Vinos", direccion: "Av. Circunvalar # 8-45", contacto: "", lat: 4.8095, lng: -75.6880, imagen: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&auto=format&fit=crop&q=60" },
       { id: 'demo-3', nombre: "Rooftop 360", categoria: "restaurante", categoriaLabel: CATEGORY_META.restaurante.label, categoriaColor: CATEGORY_META.restaurante.color, estado: "limitada", estadoLabel: "Capacidad limitada", estadoColor: ESTADO_META.limitada.color, entrega: "recogida", descripcion: "Coctelería · Panorámica", direccion: "Calle 14 # 23-11", contacto: "", lat: 4.8160, lng: -75.6920, imagen: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&auto=format&fit=crop&q=60" },
       { id: 'demo-4', nombre: "Casa Verde Suites", categoria: "otro", categoriaLabel: CATEGORY_META.otro.label, categoriaColor: CATEGORY_META.otro.color, estado: "abierto", estadoLabel: "Abierto", estadoColor: ESTADO_META.abierto.color, entrega: "ambos", descripcion: "Hospedaje · Desayuno", direccion: "Sector Los Álamos", contacto: "", lat: 4.8010, lng: -75.6840, imagen: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60" }
     ];
-    const FALLBACK_MAP = FALLBACK_PLACES.reduce((acc, p) => { acc[p.id] = p; return acc; }, {});
+    var FALLBACK_MAP = FALLBACK_PLACES.reduce((acc, p) => { acc[p.id] = p; return acc; }, {});
 
-    const PEREIRA_CENTER = { lat: 4.8115, lng: -75.6900 };
+    var PEREIRA_CENTER = { lat: 4.8115, lng: -75.6900 };
 
     // Mismo estilo de mapa "claro" que ya usas en gogo-ayuda-pereira
-    const MAP_LIGHT_STYLE = [
+    var MAP_LIGHT_STYLE = [
       { elementType: 'geometry', stylers: [{ color: '#f4f5f6' }] },
       { elementType: 'labels.text.stroke', stylers: [{ color: '#ffffff' }] },
       { elementType: 'labels.text.fill', stylers: [{ color: '#5b6168' }] },
@@ -799,16 +799,16 @@
       { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#5b6168' }] }
     ];
 
-    let map = null;
-    let mapReady = false;
-    let infoWindow = null;
-    let negocios = {};          // id -> data, viene de Firestore en tiempo real
-    let firestoreHasData = false;
-    let markers = {};           // id -> HtmlPin (pin con emoji sobre el mapa)
-    let currentCategory = 'todos';
-    let currentEstado = 'todos';
-    let currentEntrega = 'todos';
-    let activeId = null;
+    var map = null;
+    var mapReady = false;
+    var infoWindow = null;
+    var negocios = {};          // id -> data, viene de Firestore en tiempo real
+    var firestoreHasData = false;
+    var markers = {};           // id -> HtmlPin (pin con emoji sobre el mapa)
+    var currentCategory = 'todos';
+    var currentEstado = 'todos';
+    var currentEntrega = 'todos';
+    var activeId = null;
 
     function showBanner(msg, type) {
       const el = document.getElementById('demoDataBanner');
@@ -908,53 +908,56 @@
 
     // Overlay HTML posicionado sobre el mapa clásico (raster) usando
     // OverlayView — no requiere Map ID ni Marcadores Avanzados de Google.
-    class HtmlPin extends google.maps.OverlayView {
-      constructor(gmap, position, html, onClick) {
-        super();
-        this.position = position;
-        this.html = html;
-        this.onClick = onClick;
-        this.div = null;
-        this.setMap(gmap);
-      }
-      onAdd() {
-        const div = document.createElement('div');
-        div.className = 'map-pin';
-        div.innerHTML = this.html;
-        div.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (this.onClick) this.onClick();
-        });
-        this.div = div;
-        this.getPanes().overlayMouseTarget.appendChild(div);
-      }
-      draw() {
-        if (!this.div) return;
-        const proj = this.getProjection();
-        if (!proj) return;
-        const pos = proj.fromLatLngToDivPixel(new google.maps.LatLng(this.position.lat, this.position.lng));
-        this.div.style.left = pos.x + 'px';
-        this.div.style.top = pos.y + 'px';
-      }
-      onRemove() {
-        if (this.div && this.div.parentNode) this.div.parentNode.removeChild(this.div);
-        this.div = null;
-      }
-      updateContent(html) {
-        this.html = html;
-        if (this.div) this.div.innerHTML = html;
-      }
-      updatePosition(position) {
-        this.position = position;
-        this.draw();
-      }
-      setActive(active) {
-        if (this.div) this.div.classList.toggle('is-active', active);
-      }
-      remove() {
-        this.setMap(null);
-      }
+    // (Usa function + prototype en vez de "class" a propósito: es el patrón
+    // más compatible para extender OverlayView desde un callback externo.)
+    function HtmlPin(gmap, position, html, onClick) {
+      google.maps.OverlayView.call(this);
+      this.position = position;
+      this.html = html;
+      this.onClick = onClick;
+      this.div = null;
+      this.setMap(gmap);
     }
+    HtmlPin.prototype = Object.create(google.maps.OverlayView.prototype);
+    HtmlPin.prototype.constructor = HtmlPin;
+    HtmlPin.prototype.onAdd = function () {
+      const div = document.createElement('div');
+      div.className = 'map-pin';
+      div.innerHTML = this.html;
+      const self = this;
+      div.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (self.onClick) self.onClick();
+      });
+      this.div = div;
+      this.getPanes().overlayMouseTarget.appendChild(div);
+    };
+    HtmlPin.prototype.draw = function () {
+      if (!this.div) return;
+      const proj = this.getProjection();
+      if (!proj) return;
+      const pos = proj.fromLatLngToDivPixel(new google.maps.LatLng(this.position.lat, this.position.lng));
+      this.div.style.left = pos.x + 'px';
+      this.div.style.top = pos.y + 'px';
+    };
+    HtmlPin.prototype.onRemove = function () {
+      if (this.div && this.div.parentNode) this.div.parentNode.removeChild(this.div);
+      this.div = null;
+    };
+    HtmlPin.prototype.updateContent = function (html) {
+      this.html = html;
+      if (this.div) this.div.innerHTML = html;
+    };
+    HtmlPin.prototype.updatePosition = function (position) {
+      this.position = position;
+      this.draw();
+    };
+    HtmlPin.prototype.setActive = function (active) {
+      if (this.div) this.div.classList.toggle('is-active', active);
+    };
+    HtmlPin.prototype.remove = function () {
+      this.setMap(null);
+    };
 
     function whatsappUrl(contacto) {
       const digits = (contacto || '').replace(/\D/g, '');
