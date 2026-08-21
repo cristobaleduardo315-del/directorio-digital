@@ -9,9 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
     :root {
@@ -445,23 +442,6 @@
       text-overflow: ellipsis;
     }
 
-    /* Pines del mapa */
-    .map-pulse-pin {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--primary-blue);
-      border: 2px solid #ffffff;
-      box-shadow: 0 0 0 5px rgba(2, 132, 199, 0.35);
-      cursor: pointer;
-    }
-
-    .map-pulse-pin.active {
-      transform: scale(1.3);
-      background: var(--dark-text);
-      box-shadow: 0 0 0 7px rgba(15, 23, 42, 0.25);
-    }
-
     .mobile-filter-btn {
       display: none;
       position: absolute;
@@ -479,6 +459,29 @@
       gap: 6px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
       cursor: pointer;
+    }
+
+    /* Aviso de datos de ejemplo / error de conexión */
+    .demo-data-banner {
+      display: none;
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 700;
+      background: rgba(15, 23, 42, 0.92);
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      max-width: 300px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .demo-data-banner.warning {
+      background: rgba(220, 38, 38, 0.95);
     }
 
     /* --- Responsive Móvil --- */
@@ -583,19 +586,19 @@
           <div class="property-type-grid">
             <button class="property-type-btn active" onclick="selectType('todos', this)">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-              Todos (12)
+              Todos <span class="ptb-count" data-cat="todos">(0)</span>
             </button>
             <button class="property-type-btn" onclick="selectType('Café', this)">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path></svg>
-              Cafés (4)
+              Cafés <span class="ptb-count" data-cat="Café">(0)</span>
             </button>
             <button class="property-type-btn" onclick="selectType('Restaurante', this)">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
-              Bistró (5)
+              Restaurantes <span class="ptb-count" data-cat="Restaurante">(0)</span>
             </button>
             <button class="property-type-btn" onclick="selectType('Hotel', this)">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 21h18"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
-              Hoteles (3)
+              Hoteles <span class="ptb-count" data-cat="Hotel">(0)</span>
             </button>
           </div>
         </div>
@@ -652,6 +655,9 @@
         </div>
       </aside>
 
+      <!-- Aviso de datos de ejemplo / error de conexión -->
+      <div class="demo-data-banner" id="demoDataBanner"></div>
+
       <!-- Carrusel Inferior -->
       <div class="bottom-slider" id="propertiesSlider"></div>
 
@@ -661,185 +667,287 @@
     </div>
   </div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Firebase (mismo proyecto que tu app gogo-ayuda-pereira; colección nueva
+       "directorio_negocios" para no tocar la colección "negocios" de esa otra app) -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
 
   <script>
-    const places = [
-      {
-        id: 1,
-        name: "Origen & Grano Café",
-        category: "Café",
-        tag: "Abierto",
-        price: "$14.000 COP",
-        sub: "Café Especial · Repostería",
-        address: "Cra 13 # 14-22, Centro",
-        lat: 4.8143,
-        lng: -75.6946,
-        image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&auto=format&fit=crop&q=60"
-      },
-      {
-        id: 2,
-        name: "La Brasa Bistro",
-        category: "Restaurante",
-        tag: "Recomendado",
-        price: "$45.000 COP",
-        sub: "Cortes Premium · Vinos",
-        address: "Av. Circunvalar # 8-45",
-        lat: 4.8095,
-        lng: -75.6880,
-        image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&auto=format&fit=crop&q=60"
-      },
-      {
-        id: 3,
-        name: "Rooftop 360",
-        category: "Restaurante",
-        tag: "Popular",
-        price: "$38.000 COP",
-        sub: "Coctelería · Panorámica",
-        address: "Calle 14 # 23-11",
-        lat: 4.8160,
-        lng: -75.6920,
-        image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&auto=format&fit=crop&q=60"
-      },
-      {
-        id: 4,
-        name: "Casa Verde Suites",
-        category: "Hotel",
-        tag: "Boutique",
-        price: "$180.000 COP",
-        sub: "Hospedaje · Desayuno",
-        address: "Sector Los Álamos",
-        lat: 4.8010,
-        lng: -75.6840,
-        image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60"
-      }
+    /* =========================================================================
+       CONFIGURACIÓN DE FIREBASE
+       Mismo proyecto de Firebase que ya usas en gogo-ayuda-pereira (mismo
+       Firebase Console). Los negocios de este directorio viven en una
+       colección aparte para no mezclarse con los datos de esa otra app.
+
+       Documento esperado en Firestore, colección "directorio_negocios":
+       {
+         nombre: "Origen & Grano Café",
+         categoria: "Café" | "Restaurante" | "Hotel",
+         etiqueta: "Abierto",
+         precio: "$14.000 COP",
+         descripcion: "Café Especial · Repostería",
+         direccion: "Cra 13 # 14-22, Centro",
+         lat: 4.8143,
+         lng: -75.6946,
+         imagen: "https://..."
+       }
+       ========================================================================= */
+    const firebaseConfig = {
+      apiKey: "AIzaSyACQy3_crmbhwAhDhz1Pzna867rIgVKkys",
+      authDomain: "pereira-ayuda.firebaseapp.com",
+      projectId: "pereira-ayuda",
+      storageBucket: "pereira-ayuda.firebasestorage.app",
+      messagingSenderId: "984621155917",
+      appId: "1:984621155917:web:beeccea5aea47cfc43be04"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Datos de respaldo: solo se usan mientras la colección de Firestore esté
+    // vacía (o si no se puede conectar), para que el mapa nunca se vea vacío.
+    const FALLBACK_PLACES = [
+      { id: 'demo-1', nombre: "Origen & Grano Café", categoria: "Café", etiqueta: "Abierto", precio: "$14.000 COP", descripcion: "Café Especial · Repostería", direccion: "Cra 13 # 14-22, Centro", lat: 4.8143, lng: -75.6946, imagen: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&auto=format&fit=crop&q=60" },
+      { id: 'demo-2', nombre: "La Brasa Bistro", categoria: "Restaurante", etiqueta: "Recomendado", precio: "$45.000 COP", descripcion: "Cortes Premium · Vinos", direccion: "Av. Circunvalar # 8-45", lat: 4.8095, lng: -75.6880, imagen: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&auto=format&fit=crop&q=60" },
+      { id: 'demo-3', nombre: "Rooftop 360", categoria: "Restaurante", etiqueta: "Popular", precio: "$38.000 COP", descripcion: "Coctelería · Panorámica", direccion: "Calle 14 # 23-11", lat: 4.8160, lng: -75.6920, imagen: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&auto=format&fit=crop&q=60" },
+      { id: 'demo-4', nombre: "Casa Verde Suites", categoria: "Hotel", etiqueta: "Boutique", precio: "$180.000 COP", descripcion: "Hospedaje · Desayuno", direccion: "Sector Los Álamos", lat: 4.8010, lng: -75.6840, imagen: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60" }
+    ];
+    const FALLBACK_MAP = FALLBACK_PLACES.reduce((acc, p) => { acc[p.id] = p; return acc; }, {});
+
+    const PEREIRA_CENTER = { lat: 4.8115, lng: -75.6900 };
+
+    // Mismo estilo de mapa "claro" que ya usas en gogo-ayuda-pereira
+    const MAP_LIGHT_STYLE = [
+      { elementType: 'geometry', stylers: [{ color: '#f4f5f6' }] },
+      { elementType: 'labels.text.stroke', stylers: [{ color: '#ffffff' }] },
+      { elementType: 'labels.text.fill', stylers: [{ color: '#5b6168' }] },
+      { featureType: 'administrative', elementType: 'geometry', stylers: [{ color: '#c9ced2' }] },
+      { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+      { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
+      { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#6b7280' }] },
+      { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#e7e2c8' }] },
+      { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+      { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#cfe8f3' }] },
+      { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#5b6168' }] }
     ];
 
+    let map = null;
+    let mapReady = false;
+    let infoWindow = null;
+    let negocios = {};          // id -> data, viene de Firestore en tiempo real
+    let firestoreHasData = false;
+    let markers = {};           // id -> google.maps.Marker
     let currentCategory = 'todos';
-    let markers = {};
+    let activeId = null;
 
-    // Iniciar Mapa centrado
-    const map = L.map('map', {
-      zoomControl: false
-    }).setView([4.8115, -75.6900], 14);
+    function showBanner(msg, type) {
+      const el = document.getElementById('demoDataBanner');
+      el.textContent = msg;
+      el.className = 'demo-data-banner' + (type ? ' ' + type : '');
+      el.style.display = 'block';
+    }
+    function hideBanner() {
+      document.getElementById('demoDataBanner').style.display = 'none';
+    }
 
-    L.control.zoom({ position: 'topright' }).addTo(map);
+    function currentSource() {
+      return firestoreHasData ? negocios : FALLBACK_MAP;
+    }
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
-      maxZoom: 19
-    }).addTo(map);
+    function pinIcon(active) {
+      const fill = active ? '#0f172a' : '#0284c7';
+      const ring = active ? 'rgba(15,23,42,0.25)' : 'rgba(2,132,199,0.35)';
+      const size = active ? 30 : 24;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" fill="${ring}"/>
+        <circle cx="12" cy="12" r="6" fill="${fill}" stroke="#ffffff" stroke-width="2"/>
+      </svg>`;
+      return {
+        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+        scaledSize: new google.maps.Size(size, size),
+        anchor: new google.maps.Point(size / 2, size / 2)
+      };
+    }
 
-    // Forzar redibujado de mapa para evitar tiles vacíos
-    setTimeout(() => { map.invalidateSize(); }, 250);
-    window.addEventListener('resize', () => { map.invalidateSize(); });
+    function popupHtml(p) {
+      return `
+        <div style="padding:8px 8px 12px; width:210px; font-family:'Plus Jakarta Sans', sans-serif;">
+          <img src="${p.imagen || ''}" style="width:100%; height:110px; border-radius:10px; object-fit:cover; margin-bottom:6px;">
+          <div style="font-weight:800; font-size:0.95rem; color:#0f172a;">${p.precio || ''}</div>
+          <div style="font-weight:700; font-size:0.75rem; color:#64748b;">${p.nombre || ''}</div>
+          <div style="font-size:0.7rem; color:#94a3b8;">${p.direccion || ''}</div>
+        </div>
+      `;
+    }
 
-    function renderPlaces(items) {
-      const slider = document.getElementById('propertiesSlider');
-      slider.innerHTML = '';
-
-      Object.values(markers).forEach(m => map.removeLayer(m));
-      markers = {};
-
-      items.forEach(place => {
-        // Tarjeta
-        const card = document.createElement('div');
-        card.className = 'property-card';
-        card.id = `card-${place.id}`;
-        card.onclick = () => focusPlace(place.id);
-
-        card.innerHTML = `
-          <div class="property-thumb-wrap">
-            <span class="property-tag-badge">${place.tag}</span>
-            <img class="property-thumb" src="${place.image}" alt="${place.name}">
-          </div>
-          <div class="property-details">
-            <div class="property-price">${place.price}</div>
-            <div class="property-title">${place.sub}</div>
-            <div class="property-address">${place.address}</div>
-          </div>
-        `;
-        slider.appendChild(card);
-
-        // Pin mapa
-        const pinIcon = L.divIcon({
-          className: 'pin-leaflet-wrap',
-          html: `<div class="map-pulse-pin" id="pin-${place.id}"></div>`,
-          iconSize: [12, 12],
-          iconAnchor: [6, 6]
-        });
-
-        const popupHtml = `
-          <div style="padding:8px 8px 12px; width:210px; background:#fff;">
-            <img src="${place.image}" style="width:100%; height:110px; border-radius:10px; object-fit:cover; margin-bottom:6px;">
-            <div style="font-weight:800; font-size:0.95rem; color:#0f172a;">${place.price}</div>
-            <div style="font-weight:700; font-size:0.75rem; color:#64748b;">${place.name}</div>
-            <div style="font-size:0.7rem; color:#94a3b8;">${place.address}</div>
-          </div>
-        `;
-
-        const marker = L.marker([place.lat, place.lng], { icon: pinIcon })
-          .addTo(map)
-          .bindPopup(popupHtml, { offset: [0, -6] });
-
-        marker.on('click', () => highlightCard(place.id));
-        markers[place.id] = marker;
+    function updateCounts(all) {
+      const counts = { todos: all.length, 'Café': 0, 'Restaurante': 0, 'Hotel': 0 };
+      all.forEach(p => { if (counts[p.categoria] !== undefined) counts[p.categoria]++; });
+      document.querySelectorAll('.ptb-count').forEach(el => {
+        el.textContent = `(${counts[el.dataset.cat] || 0})`;
       });
     }
 
+    function renderAll() {
+      if (!mapReady) return;
+
+      const source = currentSource();
+      const all = Object.values(source);
+      const search = (document.getElementById('topSearchInput').value || '').toLowerCase();
+      const entries = Object.entries(source).filter(([, p]) => {
+        const matchCat = currentCategory === 'todos' || p.categoria === currentCategory;
+        const matchTxt = (p.nombre || '').toLowerCase().includes(search) || (p.direccion || '').toLowerCase().includes(search);
+        return matchCat && matchTxt;
+      });
+
+      // Tarjetas del carrusel inferior
+      const slider = document.getElementById('propertiesSlider');
+      slider.innerHTML = '';
+      entries.forEach(([id, p]) => {
+        const card = document.createElement('div');
+        card.className = 'property-card' + (id === activeId ? ' active' : '');
+        card.id = `card-${id}`;
+        card.onclick = () => focusPlace(id);
+        card.innerHTML = `
+          <div class="property-thumb-wrap">
+            <span class="property-tag-badge">${p.etiqueta || ''}</span>
+            <img class="property-thumb" src="${p.imagen || ''}" alt="${p.nombre || ''}">
+          </div>
+          <div class="property-details">
+            <div class="property-price">${p.precio || ''}</div>
+            <div class="property-title">${p.descripcion || ''}</div>
+            <div class="property-address">${p.direccion || ''}</div>
+          </div>
+        `;
+        slider.appendChild(card);
+      });
+
+      // Marcadores: quita los que ya no aplican, agrega/actualiza el resto
+      const visibleIds = new Set(entries.map(([id]) => id));
+      Object.keys(markers).forEach(id => {
+        if (!visibleIds.has(id)) {
+          markers[id].setMap(null);
+          delete markers[id];
+        }
+      });
+
+      entries.forEach(([id, p]) => {
+        if (typeof p.lat !== 'number' || typeof p.lng !== 'number') return;
+        if (markers[id]) {
+          markers[id].setPosition({ lat: p.lat, lng: p.lng });
+          markers[id].setIcon(pinIcon(id === activeId));
+        } else {
+          const marker = new google.maps.Marker({
+            position: { lat: p.lat, lng: p.lng },
+            map,
+            icon: pinIcon(id === activeId),
+            title: p.nombre || ''
+          });
+          marker.addListener('click', () => focusPlace(id));
+          markers[id] = marker;
+        }
+      });
+
+      updateCounts(all);
+    }
+
     function focusPlace(id) {
+      const p = currentSource()[id];
+      if (!p || !markers[id]) return;
+
       highlightCard(id);
-      const place = places.find(p => p.id === id);
-      if (place && markers[id]) {
-        map.flyTo([place.lat, place.lng], 16, { duration: 0.8 });
-        markers[id].openPopup();
-      }
+      map.panTo({ lat: p.lat, lng: p.lng });
+      map.setZoom(16);
+      infoWindow.setContent(popupHtml(p));
+      infoWindow.open({ map, anchor: markers[id] });
     }
 
     function highlightCard(id) {
+      const prevActive = activeId;
+      activeId = id;
+
       document.querySelectorAll('.property-card').forEach(c => c.classList.remove('active'));
-      document.querySelectorAll('.map-pulse-pin').forEach(p => p.classList.remove('active'));
-
       const targetCard = document.getElementById(`card-${id}`);
-      const targetPin = document.getElementById(`pin-${id}`);
-
       if (targetCard) {
         targetCard.classList.add('active');
         targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
-      if (targetPin) targetPin.classList.add('active');
+
+      if (prevActive && markers[prevActive]) markers[prevActive].setIcon(pinIcon(false));
+      if (markers[id]) markers[id].setIcon(pinIcon(true));
     }
 
     function selectType(cat, btn) {
       currentCategory = cat;
       document.querySelectorAll('.property-type-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      filterPlaces();
+      renderAll();
     }
 
     function filterPlaces() {
-      const search = document.getElementById('topSearchInput').value.toLowerCase();
-      const filtered = places.filter(p => {
-        const matchCat = currentCategory === 'todos' || p.category === currentCategory;
-        const matchTxt = p.name.toLowerCase().includes(search) || p.address.toLowerCase().includes(search);
-        return matchCat && matchTxt;
-      });
-      renderPlaces(filtered);
+      renderAll();
     }
 
     function resetFilters() {
       currentCategory = 'todos';
       document.getElementById('topSearchInput').value = '';
       document.querySelectorAll('.property-type-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
-      renderPlaces(places);
+      renderAll();
     }
 
     function toggleSidebar() {
       document.getElementById('sidebarPanel').classList.toggle('open');
     }
 
-    renderPlaces(places);
+    // Llamada automáticamente por el script de Google Maps de abajo (parámetro callback)
+    function initGoogleMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: PEREIRA_CENTER,
+        zoom: 14,
+        styles: MAP_LIGHT_STYLE,
+        disableDefaultUI: false,
+        zoomControl: true,
+        fullscreenControl: false,
+        streetViewControl: false,
+        mapTypeControl: false
+      });
+      infoWindow = new google.maps.InfoWindow();
+      mapReady = true;
+      renderAll();
+    }
+    window.initGoogleMap = initGoogleMap;
+
+    // Autenticación anónima (mismo mecanismo que gogo-ayuda-pereira) + escucha
+    // en tiempo real de la colección "directorio_negocios"
+    auth.signInAnonymously().then(() => {
+      db.collection('directorio_negocios').onSnapshot(snapshot => {
+        negocios = {};
+        snapshot.forEach(doc => { negocios[doc.id] = doc.data(); });
+        firestoreHasData = snapshot.size > 0;
+        if (firestoreHasData) {
+          hideBanner();
+        } else {
+          showBanner('Mostrando negocios de ejemplo — agrega los tuyos en Firestore (colección "directorio_negocios")');
+        }
+        renderAll();
+      }, err => {
+        console.error('Error escuchando directorio_negocios:', err);
+        showBanner('No se pudo leer Firestore (revisa las reglas de seguridad) — mostrando negocios de ejemplo', 'warning');
+        renderAll();
+      });
+    }).catch(err => {
+      console.error('Error de autenticación Firebase:', err);
+      showBanner('No se pudo conectar con Firebase — mostrando negocios de ejemplo', 'warning');
+      renderAll();
+    });
   </script>
+
+  <!-- Google Maps JS API: usa la misma API Key que gogo-ayuda-pereira.
+       IMPORTANTE: en Google Cloud Console debes agregar este dominio
+       (directorio-digital.pages.dev/*) a los "Referentes HTTP" permitidos
+       de esta API Key, o el mapa no cargará. -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHk56a7SXa61oy1xaTOdPQ_bLZ3E_Tcls&callback=initGoogleMap"></script>
 </body>
 </html>
