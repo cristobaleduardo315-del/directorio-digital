@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Directorio Digital — Explorar Mapa</title>
-  
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,6 +18,7 @@
       --muted-text: #64748b;
       --border-light: #e2e8f0;
       --panel-bg: rgba(255, 255, 255, 0.96);
+      --whatsapp-green: #16a34a;
     }
 
     * {
@@ -56,12 +57,19 @@
       z-index: 1000;
       flex-shrink: 0;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+      gap: 20px;
     }
 
     .header-nav {
       display: flex;
       align-items: center;
-      gap: 24px;
+      gap: 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      min-width: 0;
+    }
+    .header-nav::-webkit-scrollbar {
+      display: none;
     }
 
     .dashboard-logo {
@@ -91,13 +99,15 @@
     .header-nav button {
       background: none;
       border: none;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: var(--muted-text);
       cursor: pointer;
       padding: 6px 0;
       position: relative;
       transition: color 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .header-nav button.active {
@@ -124,7 +134,8 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      width: 360px;
+      width: 300px;
+      flex-shrink: 0;
     }
 
     .search-pill-header input {
@@ -141,6 +152,7 @@
       display: flex;
       align-items: center;
       gap: 14px;
+      flex-shrink: 0;
     }
 
     .header-icon-btn {
@@ -213,6 +225,9 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 2px;
     }
 
     .property-type-btn {
@@ -225,16 +240,18 @@
       align-items: center;
       gap: 6px;
       cursor: pointer;
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       font-weight: 700;
       color: var(--muted-text);
       transition: all 0.2s;
+      text-align: center;
     }
 
     .property-type-btn svg {
       stroke: var(--primary-blue);
       width: 20px;
       height: 20px;
+      flex-shrink: 0;
     }
 
     .property-type-btn.active {
@@ -243,76 +260,28 @@
       background: #f0f9ff;
     }
 
-    .budget-val {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--muted-text);
-      margin-bottom: 4px;
-    }
-
-    .budget-slider {
-      width: 100%;
-      accent-color: var(--primary-blue);
-      cursor: pointer;
-    }
-
-    .room-selector-group {
+    .chip-row {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       gap: 6px;
     }
 
-    .room-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--muted-text);
-    }
-
-    .room-buttons {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-    }
-
-    .room-btn {
+    .chip-btn {
       background: #ffffff;
-      border: 1px solid var(--border-light);
-      border-radius: 6px;
-      padding: 6px 0;
-      font-size: 0.75rem;
+      border: 1.5px solid var(--border-light);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.72rem;
       font-weight: 700;
       color: var(--dark-text);
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .room-btn.active {
+    .chip-btn.active {
       background: var(--primary-blue);
       border-color: var(--primary-blue);
       color: #ffffff;
-    }
-
-    .amenities-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .amenity-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--dark-text);
-      cursor: pointer;
-    }
-
-    .amenity-row input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--primary-blue);
-      cursor: pointer;
     }
 
     .sidebar-actions {
@@ -371,7 +340,7 @@
     }
 
     .property-card {
-      width: 240px;
+      width: 230px;
       background: #ffffff;
       border-radius: 18px;
       overflow: hidden;
@@ -390,7 +359,7 @@
     .property-thumb-wrap {
       position: relative;
       width: 100%;
-      height: 115px;
+      height: 100px;
       padding: 6px 6px 0;
     }
 
@@ -405,12 +374,11 @@
       position: absolute;
       top: 12px;
       left: 12px;
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.95);
       padding: 3px 8px;
       border-radius: 6px;
-      font-size: 0.65rem;
+      font-size: 0.63rem;
       font-weight: 800;
-      color: var(--dark-text);
     }
 
     .property-details {
@@ -418,14 +386,17 @@
     }
 
     .property-price {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: 800;
       color: var(--dark-text);
       margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .property-title {
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       font-weight: 700;
       color: var(--muted-text);
       margin-bottom: 2px;
@@ -435,11 +406,41 @@
     }
 
     .property-address {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: #94a3b8;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      margin-bottom: 8px;
+    }
+
+    .property-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .property-action-btn {
+      flex: 1;
+      text-align: center;
+      font-size: 0.66rem;
+      font-weight: 800;
+      padding: 7px 4px;
+      border-radius: 8px;
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .property-action-btn.whatsapp {
+      background: var(--whatsapp-green);
+      color: #ffffff;
+    }
+
+    .property-action-btn.directions {
+      background: #f1f5f9;
+      color: var(--dark-text);
+      border: 1px solid var(--border-light);
     }
 
     .mobile-filter-btn {
@@ -492,18 +493,6 @@
       .dashboard-header {
         padding: 0 16px;
       }
-      .header-nav {
-        gap: 16px;
-        overflow-x: auto;
-        scrollbar-width: none;
-      }
-      .header-nav::-webkit-scrollbar {
-        display: none;
-      }
-      .header-nav button {
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
       .mobile-filter-btn {
         display: flex;
       }
@@ -528,10 +517,10 @@
         bottom: 16px;
       }
       .property-card {
-        width: 200px;
+        width: 190px;
       }
       .property-thumb-wrap {
-        height: 100px;
+        height: 90px;
       }
     }
   </style>
@@ -539,17 +528,15 @@
 <body>
 
   <div class="map-dashboard-app">
-    
+
     <!-- Top Header -->
     <header class="dashboard-header">
-      <nav class="header-nav">
+      <nav class="header-nav" id="headerNav">
         <a href="index.html" class="dashboard-logo" aria-label="Volver al inicio">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           directorio digital
         </a>
-        <button class="active">Restaurantes</button>
-        <button>Cafés & Bares</button>
-        <button>Hoteles</button>
+        <!-- Los botones de categoría se generan dinámicamente en JS (buildCategoryButtons) -->
       </nav>
 
       <div class="search-pill-header">
@@ -557,7 +544,7 @@
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="text" id="topSearchInput" placeholder="Circunvalar, Pinares, Centro..." onkeyup="filterPlaces()">
+        <input type="text" id="topSearchInput" placeholder="Buscar negocio, calle, barrio..." onkeyup="filterPlaces()">
       </div>
 
       <div class="header-user-side">
@@ -583,69 +570,22 @@
       <aside class="floating-sidebar" id="sidebarPanel">
         <div>
           <div class="filter-group-title">Tipo de Negocio</div>
-          <div class="property-type-grid">
-            <button class="property-type-btn active" onclick="selectType('todos', this)">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-              Todos <span class="ptb-count" data-cat="todos">(0)</span>
-            </button>
-            <button class="property-type-btn" onclick="selectType('Café', this)">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path></svg>
-              Cafés <span class="ptb-count" data-cat="Café">(0)</span>
-            </button>
-            <button class="property-type-btn" onclick="selectType('Restaurante', this)">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
-              Restaurantes <span class="ptb-count" data-cat="Restaurante">(0)</span>
-            </button>
-            <button class="property-type-btn" onclick="selectType('Hotel', this)">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 21h18"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
-              Hoteles <span class="ptb-count" data-cat="Hotel">(0)</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="budget-box">
-          <div class="filter-group-title" style="margin-bottom:2px;">Presupuesto Promedio</div>
-          <div class="budget-val" id="budgetDisplay">$20K - $120K COP</div>
-          <input type="range" class="budget-slider" min="20" max="250" value="120" oninput="document.getElementById('budgetDisplay').innerText = '$20K - $' + this.value + 'K COP'">
-        </div>
-
-        <div class="room-selector-group">
-          <div class="filter-group-title" style="margin-bottom:0;">Capacidad / Mesa</div>
-          
-          <span class="room-label">Personas</span>
-          <div class="room-buttons">
-            <button class="room-btn">1</button>
-            <button class="room-btn">2</button>
-            <button class="room-btn active">3</button>
-            <button class="room-btn">4</button>
-            <button class="room-btn">5+</button>
-          </div>
-
-          <span class="room-label" style="margin-top:4px;">Ambiente</span>
-          <div class="room-buttons">
-            <button class="room-btn">1</button>
-            <button class="room-btn active">2</button>
-            <button class="room-btn">3</button>
-            <button class="room-btn">4</button>
-            <button class="room-btn">5+</button>
+          <div class="property-type-grid" id="sidebarCategoryButtons">
+            <!-- Se genera dinámicamente en JS (buildCategoryButtons) -->
           </div>
         </div>
 
         <div>
-          <div class="filter-group-title">Servicios</div>
-          <div class="amenities-list">
-            <label class="amenity-row">
-              <span>Pet Friendly</span>
-              <input type="checkbox" checked>
-            </label>
-            <label class="amenity-row">
-              <span>Zona WiFi & Cowork</span>
-              <input type="checkbox">
-            </label>
-            <label class="amenity-row">
-              <span>Parqueadero Gratis</span>
-              <input type="checkbox">
-            </label>
+          <div class="filter-group-title">Estado</div>
+          <div class="chip-row" id="estadoChips">
+            <!-- Se genera dinámicamente en JS (buildEstadoChips) -->
+          </div>
+        </div>
+
+        <div>
+          <div class="filter-group-title">Domicilio o recogida</div>
+          <div class="chip-row" id="entregaChips">
+            <!-- Se genera dinámicamente en JS (buildEntregaChips) -->
           </div>
         </div>
 
@@ -667,8 +607,9 @@
     </div>
   </div>
 
-  <!-- Firebase (mismo proyecto que tu app gogo-ayuda-pereira; colección nueva
-       "directorio_negocios" para no tocar la colección "negocios" de esa otra app) -->
+  <!-- Firebase (mismo proyecto de Firebase que ya usabas en gogo-ayuda-pereira;
+       colección "directorio_negocios" con los negocios migrados desde
+       soygogo.com/pereira-ayuda/negocios) -->
   <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
@@ -677,20 +618,26 @@
     /* =========================================================================
        CONFIGURACIÓN DE FIREBASE
        Mismo proyecto de Firebase que ya usas en gogo-ayuda-pereira (mismo
-       Firebase Console). Los negocios de este directorio viven en una
-       colección aparte para no mezclarse con los datos de esa otra app.
+       Firebase Console). Los negocios de este directorio viven en la
+       colección "directorio_negocios", migrados desde la colección
+       "negocios" que alimenta soygogo.com/pereira-ayuda/negocios.
 
-       Documento esperado en Firestore, colección "directorio_negocios":
+       Documento en Firestore, colección "directorio_negocios":
        {
-         nombre: "Origen & Grano Café",
-         categoria: "Café" | "Restaurante" | "Hotel",
-         etiqueta: "Abierto",
-         precio: "$14.000 COP",
-         descripcion: "Café Especial · Repostería",
-         direccion: "Cra 13 # 14-22, Centro",
-         lat: 4.8143,
-         lng: -75.6946,
-         imagen: "https://..."
+         nombre: "Perfumería instintos",
+         categoria: "otro",                 // clave interna, ver CATEGORY_META
+         categoriaLabel: "Otros",
+         categoriaColor: "#6b7280",
+         estado: "abierto" | "limitada" | "cerrado",
+         estadoLabel: "Abierto",
+         estadoColor: "#16a34a",
+         direccion: "Calle 18, ... Pereira, Risaralda",
+         contacto: "3103924010",            // WhatsApp
+         entrega: "ambos" | "domicilio" | "recogida",
+         descripcion: "Vendemos esencias de perfumes...",
+         lat: 4.8080951,
+         lng: -75.694085,
+         imagen: "https://images.unsplash.com/..."
        }
        ========================================================================= */
     const firebaseConfig = {
@@ -706,13 +653,45 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
+    // Categorías reales del directorio (mismas que soygogo.com/pereira-ayuda).
+    // Cada una define: etiqueta visible, color de acento e ícono (SVG con
+    // formas simples: circle/line/rect/polyline, para que nunca se rompa).
+    const CATEGORY_META = {
+      restaurante:  { label: 'Restaurantes',        color: '#ea580c', icon: '<line x1="6" y1="3" x2="6" y2="21"/><line x1="3" y1="3" x2="3" y2="9"/><line x1="9" y1="3" x2="9" y2="9"/><line x1="18" y1="3" x2="18" y2="21"/><circle cx="18" cy="8" r="3"/>' },
+      cafe:         { label: 'Cafés',                color: '#92400e', icon: '<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>' },
+      panaderia:    { label: 'Panaderías',           color: '#b45309', icon: '<rect x="4" y="10" width="16" height="8" rx="4"/><line x1="8" y1="10" x2="8" y2="6"/><line x1="16" y1="10" x2="16" y2="6"/>' },
+      tienda:       { label: 'Tiendas',              color: '#2563eb', icon: '<rect x="5" y="8" width="14" height="12" rx="2"/><line x1="8" y1="8" x2="8" y2="5"/><line x1="16" y1="8" x2="16" y2="5"/>' },
+      farmacia:     { label: 'Farmacias',            color: '#dc2626', icon: '<circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="7" y1="12" x2="17" y2="12"/>' },
+      ferreteria:   { label: 'Ferreterías',          color: '#57534e', icon: '<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>' },
+      taller_autos: { label: 'Talleres de autos',    color: '#1e293b', icon: '<rect x="3" y="10" width="18" height="7" rx="2"/><circle cx="7" cy="19" r="2"/><circle cx="17" cy="19" r="2"/>' },
+      mascotas:     { label: 'Mascotas',             color: '#16a34a', icon: '<circle cx="12" cy="14" r="4"/><circle cx="6" cy="7" r="1.8"/><circle cx="18" cy="7" r="1.8"/><circle cx="9" cy="3.5" r="1.4"/><circle cx="15" cy="3.5" r="1.4"/>' },
+      servicios:    { label: 'Servicios',            color: '#7c3aed', icon: '<rect x="3" y="7" width="18" height="13" rx="2"/><line x1="8" y1="7" x2="8" y2="4"/><line x1="16" y1="7" x2="16" y2="4"/><line x1="8" y1="4" x2="16" y2="4"/><line x1="3" y1="12" x2="21" y2="12"/>' },
+      ropa:         { label: 'Ropa y zapatos',       color: '#db2777', icon: '<circle cx="12" cy="4" r="1.6"/><line x1="12" y1="5.5" x2="12" y2="8"/><polyline points="4 12 12 8 20 12"/><line x1="4" y1="12" x2="20" y2="12"/>' },
+      psicologia:   { label: 'Servicio psicológico', color: '#0891b2', icon: '<circle cx="12" cy="11" r="8"/><line x1="9" y1="20" x2="7" y2="23"/>' },
+      otro:         { label: 'Otros',                color: '#6b7280', icon: '<circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>' }
+    };
+    const CATEGORY_ORDER = ['restaurante','cafe','panaderia','tienda','farmacia','ferreteria','taller_autos','mascotas','servicios','ropa','psicologia','otro'];
+    const TODOS_ICON = '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>';
+
+    const ESTADO_META = {
+      abierto:  { label: 'Abierto', color: '#16a34a' },
+      limitada: { label: 'Capacidad limitada', color: '#ea580c' },
+      cerrado:  { label: 'Cerrado', color: '#6b7280' }
+    };
+
+    const ENTREGA_META = {
+      domicilio: 'Con domicilio',
+      recogida: 'Solo recogida en sitio',
+      ambos: 'Domicilio y recogida'
+    };
+
     // Datos de respaldo: solo se usan mientras la colección de Firestore esté
     // vacía (o si no se puede conectar), para que el mapa nunca se vea vacío.
     const FALLBACK_PLACES = [
-      { id: 'demo-1', nombre: "Origen & Grano Café", categoria: "Café", etiqueta: "Abierto", precio: "$14.000 COP", descripcion: "Café Especial · Repostería", direccion: "Cra 13 # 14-22, Centro", lat: 4.8143, lng: -75.6946, imagen: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&auto=format&fit=crop&q=60" },
-      { id: 'demo-2', nombre: "La Brasa Bistro", categoria: "Restaurante", etiqueta: "Recomendado", precio: "$45.000 COP", descripcion: "Cortes Premium · Vinos", direccion: "Av. Circunvalar # 8-45", lat: 4.8095, lng: -75.6880, imagen: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&auto=format&fit=crop&q=60" },
-      { id: 'demo-3', nombre: "Rooftop 360", categoria: "Restaurante", etiqueta: "Popular", precio: "$38.000 COP", descripcion: "Coctelería · Panorámica", direccion: "Calle 14 # 23-11", lat: 4.8160, lng: -75.6920, imagen: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&auto=format&fit=crop&q=60" },
-      { id: 'demo-4', nombre: "Casa Verde Suites", categoria: "Hotel", etiqueta: "Boutique", precio: "$180.000 COP", descripcion: "Hospedaje · Desayuno", direccion: "Sector Los Álamos", lat: 4.8010, lng: -75.6840, imagen: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60" }
+      { id: 'demo-1', nombre: "Origen & Grano Café", categoria: "cafe", categoriaLabel: CATEGORY_META.cafe.label, categoriaColor: CATEGORY_META.cafe.color, estado: "abierto", estadoLabel: "Abierto", estadoColor: ESTADO_META.abierto.color, entrega: "ambos", descripcion: "Café Especial · Repostería", direccion: "Cra 13 # 14-22, Centro", contacto: "", lat: 4.8143, lng: -75.6946, imagen: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&auto=format&fit=crop&q=60" },
+      { id: 'demo-2', nombre: "La Brasa Bistro", categoria: "restaurante", categoriaLabel: CATEGORY_META.restaurante.label, categoriaColor: CATEGORY_META.restaurante.color, estado: "abierto", estadoLabel: "Abierto", estadoColor: ESTADO_META.abierto.color, entrega: "ambos", descripcion: "Cortes Premium · Vinos", direccion: "Av. Circunvalar # 8-45", contacto: "", lat: 4.8095, lng: -75.6880, imagen: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&auto=format&fit=crop&q=60" },
+      { id: 'demo-3', nombre: "Rooftop 360", categoria: "restaurante", categoriaLabel: CATEGORY_META.restaurante.label, categoriaColor: CATEGORY_META.restaurante.color, estado: "limitada", estadoLabel: "Capacidad limitada", estadoColor: ESTADO_META.limitada.color, entrega: "recogida", descripcion: "Coctelería · Panorámica", direccion: "Calle 14 # 23-11", contacto: "", lat: 4.8160, lng: -75.6920, imagen: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&auto=format&fit=crop&q=60" },
+      { id: 'demo-4', nombre: "Casa Verde Suites", categoria: "otro", categoriaLabel: CATEGORY_META.otro.label, categoriaColor: CATEGORY_META.otro.color, estado: "abierto", estadoLabel: "Abierto", estadoColor: ESTADO_META.abierto.color, entrega: "ambos", descripcion: "Hospedaje · Desayuno", direccion: "Sector Los Álamos", contacto: "", lat: 4.8010, lng: -75.6840, imagen: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60" }
     ];
     const FALLBACK_MAP = FALLBACK_PLACES.reduce((acc, p) => { acc[p.id] = p; return acc; }, {});
 
@@ -740,6 +719,8 @@
     let firestoreHasData = false;
     let markers = {};           // id -> google.maps.Marker
     let currentCategory = 'todos';
+    let currentEstado = 'todos';
+    let currentEntrega = 'todos';
     let activeId = null;
 
     function showBanner(msg, type) {
@@ -756,10 +737,71 @@
       return firestoreHasData ? negocios : FALLBACK_MAP;
     }
 
-    function pinIcon(active) {
-      const fill = active ? '#0f172a' : '#0284c7';
-      const ring = active ? 'rgba(15,23,42,0.25)' : 'rgba(2,132,199,0.35)';
-      const size = active ? 30 : 24;
+    // --- Construcción dinámica de los botones/chips de filtro ---
+    function buildCategoryButtons() {
+      const headerNav = document.getElementById('headerNav');
+      const sidebarGrid = document.getElementById('sidebarCategoryButtons');
+
+      const makeHeaderBtn = (key, label) => {
+        const btn = document.createElement('button');
+        btn.textContent = label;
+        btn.dataset.cat = key;
+        if (key === 'todos') btn.classList.add('active');
+        btn.onclick = () => applyCategory(key);
+        return btn;
+      };
+
+      const makeSidebarBtn = (key, label, icon) => {
+        const btn = document.createElement('button');
+        btn.className = 'property-type-btn';
+        btn.dataset.cat = key;
+        if (key === 'todos') btn.classList.add('active');
+        btn.onclick = () => applyCategory(key);
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icon}</svg>${label} <span class="ptb-count" data-cat="${key}">(0)</span>`;
+        return btn;
+      };
+
+      headerNav.appendChild(makeHeaderBtn('todos', 'Todos'));
+      sidebarGrid.appendChild(makeSidebarBtn('todos', 'Todos', TODOS_ICON));
+
+      CATEGORY_ORDER.forEach(key => {
+        const meta = CATEGORY_META[key];
+        headerNav.appendChild(makeHeaderBtn(key, meta.label));
+        sidebarGrid.appendChild(makeSidebarBtn(key, meta.label, meta.icon));
+      });
+    }
+
+    function buildEstadoChips() {
+      const wrap = document.getElementById('estadoChips');
+      const options = [['todos', 'Todos'], ['abierto', 'Abiertos'], ['limitada', 'Cap. limitada'], ['cerrado', 'Cerrados']];
+      options.forEach(([key, label]) => {
+        const btn = document.createElement('button');
+        btn.className = 'chip-btn' + (key === 'todos' ? ' active' : '');
+        btn.textContent = label;
+        btn.dataset.estado = key;
+        btn.onclick = () => applyEstado(key);
+        wrap.appendChild(btn);
+      });
+    }
+
+    function buildEntregaChips() {
+      const wrap = document.getElementById('entregaChips');
+      const options = [['todos', 'Todos'], ['domicilio', 'Con domicilio'], ['recogida', 'Solo recogida']];
+      options.forEach(([key, label]) => {
+        const btn = document.createElement('button');
+        btn.className = 'chip-btn' + (key === 'todos' ? ' active' : '');
+        btn.textContent = label;
+        btn.dataset.entrega = key;
+        btn.onclick = () => applyEntrega(key);
+        wrap.appendChild(btn);
+      });
+    }
+
+    function pinIcon(p, active) {
+      const closed = p.estado === 'cerrado';
+      const fill = closed ? '#94a3b8' : (p.categoriaColor || '#0284c7');
+      const ring = active ? 'rgba(15,23,42,0.28)' : (closed ? 'rgba(148,163,184,0.3)' : 'rgba(2,132,199,0.28)');
+      const size = active ? 32 : 24;
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10" fill="${ring}"/>
         <circle cx="12" cy="12" r="6" fill="${fill}" stroke="#ffffff" stroke-width="2"/>
@@ -771,19 +813,48 @@
       };
     }
 
+    function whatsappUrl(contacto) {
+      const digits = (contacto || '').replace(/\D/g, '');
+      if (!digits) return null;
+      const withCountry = digits.length === 10 ? '57' + digits : digits;
+      return `https://wa.me/${withCountry}`;
+    }
+
+    function directionsUrl(p) {
+      return `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
+    }
+
+    function actionsHtml(p) {
+      const wa = whatsappUrl(p.contacto);
+      let html = '<div class="property-actions" onclick="event.stopPropagation()">';
+      if (wa) {
+        html += `<a class="property-action-btn whatsapp" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>`;
+      }
+      html += `<a class="property-action-btn directions" href="${directionsUrl(p)}" target="_blank" rel="noopener">Cómo llegar</a>`;
+      html += '</div>';
+      return html;
+    }
+
     function popupHtml(p) {
+      const estColor = p.estadoColor || '#16a34a';
       return `
-        <div style="padding:8px 8px 12px; width:210px; font-family:'Plus Jakarta Sans', sans-serif;">
-          <img src="${p.imagen || ''}" style="width:100%; height:110px; border-radius:10px; object-fit:cover; margin-bottom:6px;">
-          <div style="font-weight:800; font-size:0.95rem; color:#0f172a;">${p.precio || ''}</div>
-          <div style="font-weight:700; font-size:0.75rem; color:#64748b;">${p.nombre || ''}</div>
-          <div style="font-size:0.7rem; color:#94a3b8;">${p.direccion || ''}</div>
+        <div style="padding:8px 8px 12px; width:230px; font-family:'Plus Jakarta Sans', sans-serif;">
+          <img src="${p.imagen || ''}" style="width:100%; height:110px; border-radius:10px; object-fit:cover; margin-bottom:8px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${estColor};"></span>
+            <span style="font-size:0.68rem; font-weight:800; color:${estColor};">${p.estadoLabel || ''}</span>
+          </div>
+          <div style="font-weight:800; font-size:0.92rem; color:#0f172a; margin-bottom:2px;">${p.nombre || ''}</div>
+          <div style="font-weight:700; font-size:0.72rem; color:#64748b; margin-bottom:2px;">${p.categoriaLabel || ''}</div>
+          <div style="font-size:0.68rem; color:#94a3b8; margin-bottom:8px;">${p.direccion || ''}</div>
+          ${actionsHtml(p)}
         </div>
       `;
     }
 
     function updateCounts(all) {
-      const counts = { todos: all.length, 'Café': 0, 'Restaurante': 0, 'Hotel': 0 };
+      const counts = { todos: all.length };
+      CATEGORY_ORDER.forEach(k => counts[k] = 0);
       all.forEach(p => { if (counts[p.categoria] !== undefined) counts[p.categoria]++; });
       document.querySelectorAll('.ptb-count').forEach(el => {
         el.textContent = `(${counts[el.dataset.cat] || 0})`;
@@ -798,8 +869,10 @@
       const search = (document.getElementById('topSearchInput').value || '').toLowerCase();
       const entries = Object.entries(source).filter(([, p]) => {
         const matchCat = currentCategory === 'todos' || p.categoria === currentCategory;
+        const matchEstado = currentEstado === 'todos' || p.estado === currentEstado;
+        const matchEntrega = currentEntrega === 'todos' || p.entrega === currentEntrega || p.entrega === 'ambos';
         const matchTxt = (p.nombre || '').toLowerCase().includes(search) || (p.direccion || '').toLowerCase().includes(search);
-        return matchCat && matchTxt;
+        return matchCat && matchEstado && matchEntrega && matchTxt;
       });
 
       // Tarjetas del carrusel inferior
@@ -810,15 +883,17 @@
         card.className = 'property-card' + (id === activeId ? ' active' : '');
         card.id = `card-${id}`;
         card.onclick = () => focusPlace(id);
+        const estColor = p.estadoColor || '#16a34a';
         card.innerHTML = `
           <div class="property-thumb-wrap">
-            <span class="property-tag-badge">${p.etiqueta || ''}</span>
+            <span class="property-tag-badge" style="color:${estColor};">${p.estadoLabel || ''}</span>
             <img class="property-thumb" src="${p.imagen || ''}" alt="${p.nombre || ''}">
           </div>
           <div class="property-details">
-            <div class="property-price">${p.precio || ''}</div>
-            <div class="property-title">${p.descripcion || ''}</div>
+            <div class="property-price">${p.nombre || ''}</div>
+            <div class="property-title">${p.categoriaLabel || ''}</div>
             <div class="property-address">${p.direccion || ''}</div>
+            ${actionsHtml(p)}
           </div>
         `;
         slider.appendChild(card);
@@ -837,12 +912,12 @@
         if (typeof p.lat !== 'number' || typeof p.lng !== 'number') return;
         if (markers[id]) {
           markers[id].setPosition({ lat: p.lat, lng: p.lng });
-          markers[id].setIcon(pinIcon(id === activeId));
+          markers[id].setIcon(pinIcon(p, id === activeId));
         } else {
           const marker = new google.maps.Marker({
             position: { lat: p.lat, lng: p.lng },
             map,
-            icon: pinIcon(id === activeId),
+            icon: pinIcon(p, id === activeId),
             title: p.nombre || ''
           });
           marker.addListener('click', () => focusPlace(id));
@@ -875,14 +950,34 @@
         targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
 
-      if (prevActive && markers[prevActive]) markers[prevActive].setIcon(pinIcon(false));
-      if (markers[id]) markers[id].setIcon(pinIcon(true));
+      const source = currentSource();
+      if (prevActive && markers[prevActive] && source[prevActive]) markers[prevActive].setIcon(pinIcon(source[prevActive], false));
+      if (markers[id] && source[id]) markers[id].setIcon(pinIcon(source[id], true));
     }
 
-    function selectType(cat, btn) {
+    function applyCategory(cat) {
       currentCategory = cat;
-      document.querySelectorAll('.property-type-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      document.querySelectorAll('[data-cat]').forEach(b => {
+        if (b.classList.contains('property-type-btn') || b.tagName === 'BUTTON') {
+          b.classList.toggle('active', b.dataset.cat === cat);
+        }
+      });
+      renderAll();
+    }
+
+    function applyEstado(estado) {
+      currentEstado = estado;
+      document.querySelectorAll('#estadoChips .chip-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.estado === estado);
+      });
+      renderAll();
+    }
+
+    function applyEntrega(entrega) {
+      currentEntrega = entrega;
+      document.querySelectorAll('#entregaChips .chip-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.entrega === entrega);
+      });
       renderAll();
     }
 
@@ -892,8 +987,12 @@
 
     function resetFilters() {
       currentCategory = 'todos';
+      currentEstado = 'todos';
+      currentEntrega = 'todos';
       document.getElementById('topSearchInput').value = '';
-      document.querySelectorAll('.property-type-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+      document.querySelectorAll('[data-cat]').forEach(b => b.classList.toggle('active', b.dataset.cat === 'todos'));
+      document.querySelectorAll('#estadoChips .chip-btn').forEach(b => b.classList.toggle('active', b.dataset.estado === 'todos'));
+      document.querySelectorAll('#entregaChips .chip-btn').forEach(b => b.classList.toggle('active', b.dataset.entrega === 'todos'));
       renderAll();
     }
 
@@ -905,7 +1004,7 @@
     function initGoogleMap() {
       map = new google.maps.Map(document.getElementById('map'), {
         center: PEREIRA_CENTER,
-        zoom: 14,
+        zoom: 13,
         styles: MAP_LIGHT_STYLE,
         disableDefaultUI: false,
         zoomControl: true,
@@ -918,6 +1017,10 @@
       renderAll();
     }
     window.initGoogleMap = initGoogleMap;
+
+    buildCategoryButtons();
+    buildEstadoChips();
+    buildEntregaChips();
 
     // Autenticación anónima (mismo mecanismo que gogo-ayuda-pereira) + escucha
     // en tiempo real de la colección "directorio_negocios"
