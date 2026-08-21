@@ -443,6 +443,93 @@
       border: 1px solid var(--border-light);
     }
 
+    /* --- Pines del mapa con emoji + etiqueta (estilo tipo Gogó/Airbnb) --- */
+    .map-pin {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transform: translate(-19px, -19px);
+      z-index: 10;
+    }
+
+    .map-pin.is-active {
+      z-index: 900;
+    }
+
+    .pin-circle {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #ffffff;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      line-height: 1;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .map-pin:hover .pin-circle {
+      transform: scale(1.12);
+    }
+
+    .map-pin.is-active .pin-circle {
+      transform: scale(1.25);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.4);
+      border-color: var(--dark-text);
+    }
+
+    .pin-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+    }
+
+    .pin-label {
+      display: none;
+      flex-direction: column;
+      line-height: 1.15;
+      max-width: 160px;
+      padding: 4px 9px;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .pin-label-name {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--dark-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pin-label-sub {
+      font-size: 0.63rem;
+      font-style: italic;
+      font-weight: 600;
+      color: var(--muted-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #map.show-pin-labels .pin-label,
+    .map-pin.is-active .pin-label {
+      display: flex;
+    }
+
     .mobile-filter-btn {
       display: none;
       position: absolute;
@@ -657,18 +744,18 @@
     // Cada una define: etiqueta visible, color de acento e ícono (SVG con
     // formas simples: circle/line/rect/polyline, para que nunca se rompa).
     const CATEGORY_META = {
-      restaurante:  { label: 'Restaurantes',        color: '#ea580c', icon: '<line x1="6" y1="3" x2="6" y2="21"/><line x1="3" y1="3" x2="3" y2="9"/><line x1="9" y1="3" x2="9" y2="9"/><line x1="18" y1="3" x2="18" y2="21"/><circle cx="18" cy="8" r="3"/>' },
-      cafe:         { label: 'Cafés',                color: '#92400e', icon: '<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>' },
-      panaderia:    { label: 'Panaderías',           color: '#b45309', icon: '<rect x="4" y="10" width="16" height="8" rx="4"/><line x1="8" y1="10" x2="8" y2="6"/><line x1="16" y1="10" x2="16" y2="6"/>' },
-      tienda:       { label: 'Tiendas',              color: '#2563eb', icon: '<rect x="5" y="8" width="14" height="12" rx="2"/><line x1="8" y1="8" x2="8" y2="5"/><line x1="16" y1="8" x2="16" y2="5"/>' },
-      farmacia:     { label: 'Farmacias',            color: '#dc2626', icon: '<circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="7" y1="12" x2="17" y2="12"/>' },
-      ferreteria:   { label: 'Ferreterías',          color: '#57534e', icon: '<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>' },
-      taller_autos: { label: 'Talleres de autos',    color: '#1e293b', icon: '<rect x="3" y="10" width="18" height="7" rx="2"/><circle cx="7" cy="19" r="2"/><circle cx="17" cy="19" r="2"/>' },
-      mascotas:     { label: 'Mascotas',             color: '#16a34a', icon: '<circle cx="12" cy="14" r="4"/><circle cx="6" cy="7" r="1.8"/><circle cx="18" cy="7" r="1.8"/><circle cx="9" cy="3.5" r="1.4"/><circle cx="15" cy="3.5" r="1.4"/>' },
-      servicios:    { label: 'Servicios',            color: '#7c3aed', icon: '<rect x="3" y="7" width="18" height="13" rx="2"/><line x1="8" y1="7" x2="8" y2="4"/><line x1="16" y1="7" x2="16" y2="4"/><line x1="8" y1="4" x2="16" y2="4"/><line x1="3" y1="12" x2="21" y2="12"/>' },
-      ropa:         { label: 'Ropa y zapatos',       color: '#db2777', icon: '<circle cx="12" cy="4" r="1.6"/><line x1="12" y1="5.5" x2="12" y2="8"/><polyline points="4 12 12 8 20 12"/><line x1="4" y1="12" x2="20" y2="12"/>' },
-      psicologia:   { label: 'Servicio psicológico', color: '#0891b2', icon: '<circle cx="12" cy="11" r="8"/><line x1="9" y1="20" x2="7" y2="23"/>' },
-      otro:         { label: 'Otros',                color: '#6b7280', icon: '<circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>' }
+      restaurante:  { label: 'Restaurantes',        color: '#ea580c', emoji: '🍽️', icon: '<line x1="6" y1="3" x2="6" y2="21"/><line x1="3" y1="3" x2="3" y2="9"/><line x1="9" y1="3" x2="9" y2="9"/><line x1="18" y1="3" x2="18" y2="21"/><circle cx="18" cy="8" r="3"/>' },
+      cafe:         { label: 'Cafés',                color: '#92400e', emoji: '☕', icon: '<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>' },
+      panaderia:    { label: 'Panaderías',           color: '#b45309', emoji: '🥖', icon: '<rect x="4" y="10" width="16" height="8" rx="4"/><line x1="8" y1="10" x2="8" y2="6"/><line x1="16" y1="10" x2="16" y2="6"/>' },
+      tienda:       { label: 'Tiendas',              color: '#2563eb', emoji: '🛍️', icon: '<rect x="5" y="8" width="14" height="12" rx="2"/><line x1="8" y1="8" x2="8" y2="5"/><line x1="16" y1="8" x2="16" y2="5"/>' },
+      farmacia:     { label: 'Farmacias',            color: '#dc2626', emoji: '💊', icon: '<circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="7" y1="12" x2="17" y2="12"/>' },
+      ferreteria:   { label: 'Ferreterías',          color: '#57534e', emoji: '🔧', icon: '<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>' },
+      taller_autos: { label: 'Talleres de autos',    color: '#1e293b', emoji: '🚗', icon: '<rect x="3" y="10" width="18" height="7" rx="2"/><circle cx="7" cy="19" r="2"/><circle cx="17" cy="19" r="2"/>' },
+      mascotas:     { label: 'Mascotas',             color: '#16a34a', emoji: '🐾', icon: '<circle cx="12" cy="14" r="4"/><circle cx="6" cy="7" r="1.8"/><circle cx="18" cy="7" r="1.8"/><circle cx="9" cy="3.5" r="1.4"/><circle cx="15" cy="3.5" r="1.4"/>' },
+      servicios:    { label: 'Servicios',            color: '#7c3aed', emoji: '💼', icon: '<rect x="3" y="7" width="18" height="13" rx="2"/><line x1="8" y1="7" x2="8" y2="4"/><line x1="16" y1="7" x2="16" y2="4"/><line x1="8" y1="4" x2="16" y2="4"/><line x1="3" y1="12" x2="21" y2="12"/>' },
+      ropa:         { label: 'Ropa y zapatos',       color: '#db2777', emoji: '👕', icon: '<circle cx="12" cy="4" r="1.6"/><line x1="12" y1="5.5" x2="12" y2="8"/><polyline points="4 12 12 8 20 12"/><line x1="4" y1="12" x2="20" y2="12"/>' },
+      psicologia:   { label: 'Servicio psicológico', color: '#0891b2', emoji: '🧠', icon: '<circle cx="12" cy="11" r="8"/><line x1="9" y1="20" x2="7" y2="23"/>' },
+      otro:         { label: 'Otros',                color: '#6b7280', emoji: '📍', icon: '<circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>' }
     };
     const CATEGORY_ORDER = ['restaurante','cafe','panaderia','tienda','farmacia','ferreteria','taller_autos','mascotas','servicios','ropa','psicologia','otro'];
     const TODOS_ICON = '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>';
@@ -717,7 +804,7 @@
     let infoWindow = null;
     let negocios = {};          // id -> data, viene de Firestore en tiempo real
     let firestoreHasData = false;
-    let markers = {};           // id -> google.maps.Marker
+    let markers = {};           // id -> HtmlPin (pin con emoji sobre el mapa)
     let currentCategory = 'todos';
     let currentEstado = 'todos';
     let currentEntrega = 'todos';
@@ -797,20 +884,76 @@
       });
     }
 
-    function pinIcon(p, active) {
-      const closed = p.estado === 'cerrado';
-      const fill = closed ? '#94a3b8' : (p.categoriaColor || '#0284c7');
-      const ring = active ? 'rgba(15,23,42,0.28)' : (closed ? 'rgba(148,163,184,0.3)' : 'rgba(2,132,199,0.28)');
-      const size = active ? 32 : 24;
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10" fill="${ring}"/>
-        <circle cx="12" cy="12" r="6" fill="${fill}" stroke="#ffffff" stroke-width="2"/>
-      </svg>`;
-      return {
-        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
-        scaledSize: new google.maps.Size(size, size),
-        anchor: new google.maps.Point(size / 2, size / 2)
-      };
+    function escapeHtml(s) {
+      return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    // HTML del pin: círculo blanco con el emoji de la categoría + puntico de
+    // color según el estado (abierto/limitada/cerrado), y una etiqueta con el
+    // nombre del negocio que solo se ve activa o con zoom suficiente.
+    function pinHtml(p) {
+      const meta = CATEGORY_META[p.categoria] || CATEGORY_META.otro;
+      const estColor = p.estadoColor || '#94a3b8';
+      return `
+        <div class="pin-circle">
+          ${meta.emoji}
+          <span class="pin-dot" style="background:${estColor};"></span>
+        </div>
+        <div class="pin-label">
+          <div class="pin-label-name">${escapeHtml(p.nombre)}</div>
+          <div class="pin-label-sub">${escapeHtml(p.categoriaLabel)}</div>
+        </div>
+      `;
+    }
+
+    // Overlay HTML posicionado sobre el mapa clásico (raster) usando
+    // OverlayView — no requiere Map ID ni Marcadores Avanzados de Google.
+    class HtmlPin extends google.maps.OverlayView {
+      constructor(gmap, position, html, onClick) {
+        super();
+        this.position = position;
+        this.html = html;
+        this.onClick = onClick;
+        this.div = null;
+        this.setMap(gmap);
+      }
+      onAdd() {
+        const div = document.createElement('div');
+        div.className = 'map-pin';
+        div.innerHTML = this.html;
+        div.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (this.onClick) this.onClick();
+        });
+        this.div = div;
+        this.getPanes().overlayMouseTarget.appendChild(div);
+      }
+      draw() {
+        if (!this.div) return;
+        const proj = this.getProjection();
+        if (!proj) return;
+        const pos = proj.fromLatLngToDivPixel(new google.maps.LatLng(this.position.lat, this.position.lng));
+        this.div.style.left = pos.x + 'px';
+        this.div.style.top = pos.y + 'px';
+      }
+      onRemove() {
+        if (this.div && this.div.parentNode) this.div.parentNode.removeChild(this.div);
+        this.div = null;
+      }
+      updateContent(html) {
+        this.html = html;
+        if (this.div) this.div.innerHTML = html;
+      }
+      updatePosition(position) {
+        this.position = position;
+        this.draw();
+      }
+      setActive(active) {
+        if (this.div) this.div.classList.toggle('is-active', active);
+      }
+      remove() {
+        this.setMap(null);
+      }
     }
 
     function whatsappUrl(contacto) {
@@ -899,11 +1042,12 @@
         slider.appendChild(card);
       });
 
-      // Marcadores: quita los que ya no aplican, agrega/actualiza el resto
+      // Marcadores (pines HTML con emoji): quita los que ya no aplican,
+      // agrega/actualiza el resto
       const visibleIds = new Set(entries.map(([id]) => id));
       Object.keys(markers).forEach(id => {
         if (!visibleIds.has(id)) {
-          markers[id].setMap(null);
+          markers[id].remove();
           delete markers[id];
         }
       });
@@ -911,17 +1055,13 @@
       entries.forEach(([id, p]) => {
         if (typeof p.lat !== 'number' || typeof p.lng !== 'number') return;
         if (markers[id]) {
-          markers[id].setPosition({ lat: p.lat, lng: p.lng });
-          markers[id].setIcon(pinIcon(p, id === activeId));
+          markers[id].updatePosition({ lat: p.lat, lng: p.lng });
+          markers[id].updateContent(pinHtml(p));
+          markers[id].setActive(id === activeId);
         } else {
-          const marker = new google.maps.Marker({
-            position: { lat: p.lat, lng: p.lng },
-            map,
-            icon: pinIcon(p, id === activeId),
-            title: p.nombre || ''
-          });
-          marker.addListener('click', () => focusPlace(id));
-          markers[id] = marker;
+          const pin = new HtmlPin(map, { lat: p.lat, lng: p.lng }, pinHtml(p), () => focusPlace(id));
+          markers[id] = pin;
+          if (id === activeId) pin.setActive(true);
         }
       });
 
@@ -934,9 +1074,10 @@
 
       highlightCard(id);
       map.panTo({ lat: p.lat, lng: p.lng });
-      map.setZoom(16);
+      if (map.getZoom() < 16) map.setZoom(16);
       infoWindow.setContent(popupHtml(p));
-      infoWindow.open({ map, anchor: markers[id] });
+      infoWindow.setPosition({ lat: p.lat, lng: p.lng });
+      infoWindow.open(map);
     }
 
     function highlightCard(id) {
@@ -950,9 +1091,8 @@
         targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
 
-      const source = currentSource();
-      if (prevActive && markers[prevActive] && source[prevActive]) markers[prevActive].setIcon(pinIcon(source[prevActive], false));
-      if (markers[id] && source[id]) markers[id].setIcon(pinIcon(source[id], true));
+      if (prevActive && markers[prevActive]) markers[prevActive].setActive(false);
+      if (markers[id]) markers[id].setActive(true);
     }
 
     function applyCategory(cat) {
@@ -1000,6 +1140,16 @@
       document.getElementById('sidebarPanel').classList.toggle('open');
     }
 
+    // A partir de este zoom se muestra el nombre junto a cada pin; con menos
+    // zoom (vista de toda Pereira) solo se ven los círculos con el emoji,
+    // para que no se amontonen las 74 etiquetas.
+    const LABEL_ZOOM_THRESHOLD = 15;
+
+    function updateLabelVisibility() {
+      const mapEl = document.getElementById('map');
+      mapEl.classList.toggle('show-pin-labels', map.getZoom() >= LABEL_ZOOM_THRESHOLD);
+    }
+
     // Llamada automáticamente por el script de Google Maps de abajo (parámetro callback)
     function initGoogleMap() {
       map = new google.maps.Map(document.getElementById('map'), {
@@ -1012,8 +1162,10 @@
         streetViewControl: false,
         mapTypeControl: false
       });
-      infoWindow = new google.maps.InfoWindow();
+      infoWindow = new google.maps.InfoWindow({ pixelOffset: new google.maps.Size(0, -18) });
+      map.addListener('zoom_changed', updateLabelVisibility);
       mapReady = true;
+      updateLabelVisibility();
       renderAll();
     }
     window.initGoogleMap = initGoogleMap;
