@@ -1140,14 +1140,12 @@
       document.getElementById('sidebarPanel').classList.toggle('open');
     }
 
-    // A partir de este zoom se muestra el nombre junto a cada pin; con menos
+    // A partir de zoom 15 se muestra el nombre junto a cada pin; con menos
     // zoom (vista de toda Pereira) solo se ven los círculos con el emoji,
     // para que no se amontonen las 74 etiquetas.
-    const LABEL_ZOOM_THRESHOLD = 15;
-
     function updateLabelVisibility() {
       const mapEl = document.getElementById('map');
-      mapEl.classList.toggle('show-pin-labels', map.getZoom() >= LABEL_ZOOM_THRESHOLD);
+      mapEl.classList.toggle('show-pin-labels', map.getZoom() >= 15);
     }
 
     // Llamada automáticamente por el script de Google Maps de abajo (parámetro callback)
